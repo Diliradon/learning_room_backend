@@ -57,7 +57,8 @@ class User(AbstractUser):
     profile_picture = models.ImageField(
         upload_to=movie_image_file_path,
         blank=True,
-        null=True
+        null=True,
+        default="media/default_user_image/pngtree-anonymous-user-unidentified-contact-avatar-png-image_4816655.png"
     )
 
     USERNAME_FIELD = "email"
