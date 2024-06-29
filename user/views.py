@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -29,7 +30,7 @@ class LoginAPIView(APIView):
         user = authenticate(username=serializer.data['email'], password=serializer.data['password'])
         if user is not None:
             login(request, user)
-            return Response({"message": "Logged in successfully"}, status=status.HTTP_200_OK)
+            return redirect("user:current-user")
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -41,7 +42,7 @@ class LogoutAPIView(APIView):
         return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
 
 
-class ManageUserView(generics.RetrieveUpdateAPIView):
+class CurrentUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, )
 

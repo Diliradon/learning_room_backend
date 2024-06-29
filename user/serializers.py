@@ -32,6 +32,6 @@ class LoginSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
 
-    class Mata:
+    class Meta:
         model = get_user_model()
         fields = ("first_name", "last_name", "email")
