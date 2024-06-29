@@ -4,13 +4,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from .serializers import RegisterUserSerializer, LoginSerializer
+from .serializers import RegisterUserSerializer, LoginSerializer, UserSerializer
 
 
 class RegisterAPIView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = RegisterUserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny, )
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -21,7 +21,7 @@ class RegisterAPIView(generics.CreateAPIView):
 
 
 class LoginAPIView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny, )
 
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
@@ -34,8 +34,16 @@ class LoginAPIView(APIView):
 
 
 class LogoutAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
 
     def post(self, request, *args, **kwargs):
         logout(request)
         return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
+
+
+class ManageUserView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_object(self):
+        return self.request.user

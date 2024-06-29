@@ -7,7 +7,12 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('email', 'password', 'first_name', 'last_name')
+        fields = (
+            'email',
+            'password',
+            'first_name',
+            'last_name',
+        )
 
     def create(self, validated_data):
         user = get_user_model().objects.create_user(
@@ -23,3 +28,10 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Mata:
+        model = get_user_model()
+        fields = ("first_name", "last_name", "email")

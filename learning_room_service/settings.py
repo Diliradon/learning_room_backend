@@ -73,11 +73,11 @@ AUTHENTICATION_BACKENDS = (
 )
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST = "smtp.mailersend.net"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "kravetsbodj@gmail.com"
-EMAIL_HOST_PASSWORD = "bodj2002"
+EMAIL_HOST_USER = "MS_vafBHP@trial-k68zxl289e3lj905.mlsender.net"
+EMAIL_HOST_PASSWORD = "NlgQNnDOXGHOgjt6"
 DEFAULT_FROM_EMAIL = "webmaster@bodj.com"
 
 ACCOUNT_EMAIL_REQUIRED = True
