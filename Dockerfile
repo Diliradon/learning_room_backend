@@ -6,8 +6,10 @@ ENV PYTHONUNBUFFERED 1
 
 COPY requirements.txt requirements.txt
 
-RUN apt-get update \
-    && apt-get -y install libpq-dev gcc
+RUN apt-get update --fix-missing \
+    && apt-get -y install libpq-dev gcc \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -r requirements.txt
 
