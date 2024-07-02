@@ -38,12 +38,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "rest_framework.authtoken",
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
     "rest_framework",
     "debug_toolbar",
     "corsheaders",
@@ -66,25 +60,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "learning_room_service.urls"
-
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
-
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.mailersend.net"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "MS_vafBHP@trial-k68zxl289e3lj905.mlsender.net"
-EMAIL_HOST_PASSWORD = "NlgQNnDOXGHOgjt6"
-DEFAULT_FROM_EMAIL = "webmaster@bodj.com"
-
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 TEMPLATES = [
     {
