@@ -41,24 +41,24 @@ class ChangeUserPasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
-    def validated_new_password(self, value):
-        if value == self.old_password:
-            return serializers.ValidationError(
+    def validate_new_password(self, value):
+        if value == self.initial_data.get("old_password"):
+            raise serializers.ValidationError(
                 "The new password cannot be the same as the previous password!"
             )
 
         if len(value) < 8:
-            return serializers.ValidationError(
+            raise serializers.ValidationError(
                 "The new password must be at least 8 characters long!"
             )
 
         if str(value).isalpha():
-            return serializers.ValidationError(
+            raise serializers.ValidationError(
                 "The new password cannot consist of only letters!"
             )
 
         if str(value).isdigit():
-            return serializers.ValidationError(
+            raise serializers.ValidationError(
                 "The new password cannot consist of only digits!"
             )
 
