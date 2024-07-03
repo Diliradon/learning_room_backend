@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from .serializers import RegisterUserSerializer, LoginSerializer, UserSerializer
+from .serializers import RegisterUserSerializer, LoginSerializer, UserSerializer, ChangeUserPasswordSerializer
 
 
 class RegisterAPIView(generics.CreateAPIView):
@@ -48,3 +48,27 @@ class CurrentUserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class ChangeUserPasswordAPIView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangeUserPasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            old_password = serializer.data.get("old_password")
+            user = request.user
+
+            if not user.check_password(old_password):
+                return Response(
+                    {"old_password": "Wrong password!"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            new_password = serializer.data.get("new_password")
+
+            user.set_password(new_password)
+            user.save()
+            return redirect("user:login")
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
