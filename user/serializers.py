@@ -35,3 +35,24 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ("first_name", "last_name", "email")
+
+
+class ChangeUserPasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validated_new_password(self, value):
+        if len(value) < 8:
+            return serializers.ValidationError(
+                "The new password must be at least 8 characters long!"
+            )
+        if str(value).isalpha():
+            return serializers.ValidationError(
+                "The new password cannot consist of only letters!"
+            )
+        if str(value).isdigit():
+            return serializers.ValidationError(
+                "The new password cannot consist of only digits!"
+            )
+
+        return value
