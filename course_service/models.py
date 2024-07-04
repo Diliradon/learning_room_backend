@@ -14,14 +14,13 @@ class Course(models.Model):
     creator = models.ForeignKey(
         AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="courses"
+        related_name="created_courses"
     )
-    teachers = models.ManyToManyField(AUTH_USER_MODEL)
-    students = models.ManyToManyField(AUTH_USER_MODEL, blank=True)
+    teachers = models.ManyToManyField(AUTH_USER_MODEL, related_name="teaching_courses")
+    students = models.ManyToManyField(AUTH_USER_MODEL, blank=True, related_name="studying_courses")
     tasks = models.ManyToManyField(Task, blank=True)
 
     class Meta:
-        unique_together = ["teachers", "students"]
         ordering = ["name"]
 
     def __str__(self):

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "debug_toolbar",
     "corsheaders",
+    "course_service",
     "user",
 ]
 
