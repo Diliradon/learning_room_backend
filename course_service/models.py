@@ -1,5 +1,4 @@
 from django.db import models
-import shortuuid
 from learning_room_service.settings import AUTH_USER_MODEL
 
 
@@ -10,7 +9,7 @@ class Task(models.Model):
 class Course(models.Model):
     name = models.CharField(null=False, blank=False, max_length=100)
     description = models.TextField(null=False, blank=True)
-    unique_key = models.CharField(default=shortuuid.uuid, max_length=22, unique=True)
+    unique_key = models.CharField(max_length=22, unique=True)
     creator = models.ForeignKey(
         AUTH_USER_MODEL,
         on_delete=models.CASCADE,
