@@ -5,13 +5,13 @@ from course_service.models import Course
 class TeachingCourseListSerializer(serializers.ModelSerializer):
 
     class Meta:
-        models = Course
+        model = Course
         fields = ("id", "name", "description", "unique_key")
 
 
 class StudyingCourseListSerializer(serializers.ModelSerializer):
 
     class Meta:
-        models = Course
+        model = Course
         fields = ("id", "name", "description")
 
