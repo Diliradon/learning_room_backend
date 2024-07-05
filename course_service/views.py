@@ -2,6 +2,7 @@ from rest_framework import viewsets, mixins
 from course_service.serializers import (
     TeachingCourseListSerializer,
     TeachingCourseCreateSerializer,
+    TeachingCourseDetailSerializer,
 )
 from course_service.models import Course
 
@@ -9,7 +10,8 @@ from course_service.models import Course
 class TeachingCourseViewSet(
     viewsets.GenericViewSet,
     mixins.ListModelMixin,
-    mixins.CreateModelMixin
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
 ):
     queryset = Course.objects.all()
 
@@ -17,6 +19,9 @@ class TeachingCourseViewSet(
 
         if self.action == "create":
             return TeachingCourseCreateSerializer
+
+        if self.action == "retrieve":
+            return TeachingCourseDetailSerializer
 
         return TeachingCourseListSerializer
 
