@@ -9,9 +9,15 @@ class TeachingCourseListSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "description", "unique_key")
 
 
+class TeachingCourseCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Course
+        fields = ("id", "name", "description", "unique_key", "teachers", "students")
+
+
 class StudyingCourseListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
         fields = ("id", "name", "description")
-

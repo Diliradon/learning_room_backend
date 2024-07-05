@@ -9,14 +9,22 @@ class Task(models.Model):
 class Course(models.Model):
     name = models.CharField(null=False, blank=False, max_length=100)
     description = models.TextField(null=False, blank=True)
-    unique_key = models.CharField(max_length=22, unique=True)
+    unique_key = models.CharField(max_length=22, unique=True, blank=True)
     creator = models.ForeignKey(
         AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="created_courses"
     )
-    teachers = models.ManyToManyField(AUTH_USER_MODEL, related_name="teaching_courses")
-    students = models.ManyToManyField(AUTH_USER_MODEL, blank=True, related_name="studying_courses")
+    teachers = models.ManyToManyField(
+        AUTH_USER_MODEL,
+        blank=True,
+        related_name="teaching_courses",
+    )
+    students = models.ManyToManyField(
+        AUTH_USER_MODEL,
+        blank=True,
+        related_name="studying_courses"
+    )
     tasks = models.ManyToManyField(Task, blank=True)
 
     class Meta:
