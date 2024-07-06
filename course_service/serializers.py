@@ -48,4 +48,12 @@ class StudyingCourseListSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "description")
 
 
+class JoinToCourseByKeySerializer(serializers.Serializer):
+    unique_key = serializers.CharField(required=True)
 
+    def validate_unique_key(self, value):
+
+        if len(value) != 22:
+            raise serializers.ValidationError("Unique key must be 22 characters long!")
+
+        return value

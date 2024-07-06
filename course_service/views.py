@@ -1,9 +1,13 @@
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
 from course_service.serializers import (
     TeachingCourseListSerializer,
     TeachingCourseCreateSerializer,
     TeachingCourseDetailSerializer,
     StudyingCourseListSerializer,
+    JoinToCourseByKeySerializer,
 )
 from course_service.models import Course
 
@@ -42,9 +46,41 @@ class StudyingCourseViewSet(
     queryset = Course.objects.all()
 
     def get_serializer_class(self):
+        if self.action == 'join_the_course_by_unique_key':
+            return JoinToCourseByKeySerializer
 
         return StudyingCourseListSerializer
 
     def get_queryset(self):
         user = self.request.user
         return user.studying_courses.prefetch_related("students", "teachers", "tasks")
+
+    @action(
+        methods=["POST"],
+        detail=False,
+        url_path="join-course"
+    )
+    def join_the_course_by_unique_key(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        unique_key = serializer.validated_data["unique_key"]
+
+        try:
+            course = Course.objects.get(unique_key=unique_key)
+
+        except Course.DoesNotExist:
+            return Response({"detail": "Course not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+
+        if course.teachers.filter(id=request.user.id).exists():
+            return Response({"detail": "You are a teacher in this course!"}, status=status.HTTP_409_CONFLICT)
+
+        if course.students.filter(id=request.user.id).exists():
+            return Response({"detail": "You are already connected to the course!"}, status=status.HTTP_409_CONFLICT)
+
+        course.students.add(user)
+        course.save()
+
+        return Response({"detail": "Successfully joined the course."}, status=status.HTTP_200_OK)
