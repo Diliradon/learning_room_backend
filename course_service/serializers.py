@@ -57,3 +57,12 @@ class JoinToCourseByKeySerializer(serializers.Serializer):
             raise serializers.ValidationError("Unique key must be 22 characters long!")
 
         return value
+
+
+class StudyingCourseDetailSerializer(serializers.ModelSerializer):
+    students = UserByDetailTeachingSerializer(many=True, read_only=True)
+    teachers = UserByDetailTeachingSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Course
+        fields = ("id", "name", "description", "teachers", "students", "tasks")
