@@ -29,6 +29,11 @@ class TeachingCourseViewSet(
         return TeachingCourseListSerializer
 
     def get_queryset(self):
+        name = self.request.query_params.get("name")
+
+        if name:
+            self.queryset.filter(name=name)
+
         user = self.request.user
         return user.teaching_courses.prefetch_related("students", "teachers", "tasks")
 
@@ -55,6 +60,11 @@ class StudyingCourseViewSet(
         return StudyingCourseListSerializer
 
     def get_queryset(self):
+        name = self.request.query_params.get("name")
+
+        if name:
+            self.queryset.filter(name=name)
+
         user = self.request.user
         return user.studying_courses.prefetch_related("students", "teachers", "tasks")
 
