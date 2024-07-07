@@ -40,6 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ChangeUserPasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+    new_password_again = serializers.CharField(required=True)
 
     def validate_new_password(self, value):
         if value == self.initial_data.get("old_password"):
@@ -60,6 +61,11 @@ class ChangeUserPasswordSerializer(serializers.Serializer):
         if str(value).isdigit():
             raise serializers.ValidationError(
                 "The new password cannot consist of only digits!"
+            )
+
+        if value != self.initial_data.get("new_password_again"):
+            raise serializers.ValidationError(
+                "The new passwords do not match!"
             )
 
         return value
