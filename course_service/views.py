@@ -48,8 +48,10 @@ class StudyingCourseViewSet(
     queryset = Course.objects.all()
 
     def get_serializer_class(self):
+
         if self.action == 'join_the_course_by_unique_key':
             return JoinToCourseByKeySerializer
+
         if self.action == "retrieve":
             return StudyingCourseDetailSerializer
 
