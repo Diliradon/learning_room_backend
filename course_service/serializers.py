@@ -25,8 +25,8 @@ class UserByDetailTeachingSerializer(serializers.ModelSerializer):
 
 
 class TeachingCourseDetailSerializer(serializers.ModelSerializer):
-    students = UserByDetailTeachingSerializer(many=True, read_only=True)
-    teachers = UserByDetailTeachingSerializer(many=True, read_only=True)
+    students = UserByDetailTeachingSerializer(many=True, read_only=False)
+    teachers = UserByDetailTeachingSerializer(many=True, read_only=False)
 
     class Meta:
         model = Course

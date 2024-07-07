@@ -14,10 +14,7 @@ from course_service.models import Course
 
 
 class TeachingCourseViewSet(
-    viewsets.GenericViewSet,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
+    viewsets.ModelViewSet
 ):
     queryset = Course.objects.all()
 
@@ -26,7 +23,7 @@ class TeachingCourseViewSet(
         if self.action == "create":
             return TeachingCourseCreateSerializer
 
-        if self.action == "retrieve":
+        if self.action == "retrieve" or self.action == "update":
             return TeachingCourseDetailSerializer
 
         return TeachingCourseListSerializer
