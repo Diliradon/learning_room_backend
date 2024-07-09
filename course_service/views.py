@@ -41,6 +41,15 @@ class TeachingCourseViewSet(
         course = serializer.save(creator=self.request.user)
         course.teachers.add(self.request.user)
 
+        if course.students.filter(id=self.request.user.id).exists():
+            course.students.remove(self.request.user)
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+
+        if course.students.filter(id=self.request.user.id).exists():
+            course.students.remove(self.request.user)
+
 
 class StudyingCourseViewSet(
     viewsets.GenericViewSet,
