@@ -10,6 +10,8 @@ class Course(models.Model):
     name = models.CharField(null=False, blank=False, max_length=100)
     description = models.TextField(null=False, blank=True)
     unique_key = models.CharField(max_length=22, unique=True, blank=True)
+    created_date = models.DateField(auto_now=True)
+    number_of_classroom = models.CharField(default="Online only!")
     creator = models.ForeignKey(
         AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -28,7 +30,7 @@ class Course(models.Model):
     tasks = models.ManyToManyField(Task, blank=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["name", "-created_date"]
 
     def __str__(self):
         return self.name
