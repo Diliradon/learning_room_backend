@@ -7,14 +7,22 @@ class TeachingCourseListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("id", "name", "description", "unique_key")
+        fields = ("id", "name", "description", "unique_key", "created_date")
 
 
 class TeachingCourseCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("id", "name", "description", "unique_key", "teachers", "students")
+        fields = (
+            "id",
+            "name",
+            "description",
+            "unique_key",
+            "teachers",
+            "students",
+            "number_of_classroom",
+        )
 
 
 class UserByDetailTeachingSerializer(serializers.ModelSerializer):
@@ -35,6 +43,8 @@ class TeachingCourseDetailSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "unique_key",
+            "number_of_classroom",
+            "created_date",
             "teachers",
             "students",
             "tasks"
@@ -45,7 +55,7 @@ class StudyingCourseListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("id", "name", "description")
+        fields = ("id", "name", "description", "number_of_classroom")
 
 
 class JoinToCourseByKeySerializer(serializers.Serializer):
@@ -65,4 +75,13 @@ class StudyingCourseDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("id", "name", "description", "teachers", "students", "tasks")
+        fields = (
+            "id",
+            "name",
+            "description",
+            "number_of_classroom",
+            "created_date",
+            "teachers",
+            "students",
+            "tasks",
+        )
