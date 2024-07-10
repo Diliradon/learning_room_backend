@@ -16,7 +16,7 @@ from course_service.models import Course
 class TeachingCourseViewSet(
     viewsets.ModelViewSet
 ):
-    queryset = Course.objects.all()
+    queryset = Course.objects.prefetch_related("students", "teachers", "tasks")
 
     def get_serializer_class(self):
 
@@ -33,6 +33,8 @@ class TeachingCourseViewSet(
 
         if name:
             self.queryset.filter(name=name)
+
+        self.queryset.distinct()
 
         user = self.request.user
         return user.teaching_courses.prefetch_related("students", "teachers", "tasks")
@@ -56,7 +58,7 @@ class StudyingCourseViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
 ):
-    queryset = Course.objects.all()
+    queryset = Course.objects.prefetch_related("students", "teachers", "tasks")
 
     def get_serializer_class(self):
 
@@ -68,11 +70,23 @@ class StudyingCourseViewSet(
 
         return StudyingCourseListSerializer
 
+    @staticmethod
+    def _params_to_ints(qs):
+        """Converts a list of string IDs to a list of integers"""
+        return [int(str_id) for str_id in qs.split(",")]
+
     def get_queryset(self):
         name = self.request.query_params.get("name")
+        teachers = self.request.query_params.get("teachers")
 
         if name:
             self.queryset.filter(name=name)
+
+        if teachers:
+            teachers_ids = self._params_to_ints(teachers)
+            self.queryset.filter(genres__id__in=teachers_ids)
+
+        self.queryset.distinct()
 
         user = self.request.user
         return user.studying_courses.prefetch_related("students", "teachers", "tasks")
