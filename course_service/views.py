@@ -1,3 +1,5 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -51,6 +53,18 @@ class TeachingCourseViewSet(
 
         if course.students.filter(id=self.request.user.id).exists():
             course.students.remove(self.request.user)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "name",
+                type=OpenApiTypes.STR,
+                description="Filter by teaching course name (ex. ?name=fiction)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class StudyingCourseViewSet(
@@ -120,3 +134,20 @@ class StudyingCourseViewSet(
         course.save()
 
         return Response({"detail": "Successfully joined the course."}, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "teachers",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by teacher id (ex. ?teachers=2,5)",
+            ),
+            OpenApiParameter(
+                "name",
+                type=OpenApiTypes.STR,
+                description="Filter by teaching course name (ex. ?name=fiction)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
