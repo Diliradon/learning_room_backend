@@ -6,10 +6,11 @@ ENV PYTHONUNBUFFERED 1
 
 COPY requirements.txt requirements.txt
 
-RUN apt-get update --fix-missing \
-    && apt-get -y install libpq-dev gcc \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN sed -i 's|http://deb.debian.org/debian|http://ftp.us.debian.org/debian|g' /etc/apt/sources.list && \
+    apt-get clean && \
+    apt-get update --fix-missing && \
+    apt-get -y install libpq-dev gcc && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip install -r requirements.txt
 
