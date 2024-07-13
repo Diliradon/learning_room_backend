@@ -14,8 +14,7 @@ class Course(models.Model):
     unique_key = models.CharField(
         max_length=LENGTH_UNIQUE_KEY,
         unique=True,
-        blank=False,
-        null=False
+        blank=True,
     )
     created_date = models.DateField(auto_now=True)
     number_of_classroom = models.CharField(default="Online only!")
