@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "corsheaders",
     "course_service",
+    "task_service",
     "user",
 ]
 
