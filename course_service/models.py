@@ -9,7 +9,7 @@ class Task(models.Model):
 class Course(models.Model):
     name = models.CharField(null=False, blank=False, max_length=100)
     description = models.TextField(null=False, blank=True)
-    unique_key = models.CharField(max_length=22, unique=True, blank=True)
+    unique_key = models.CharField(max_length=6, unique=True, blank=False, null=False)
     created_date = models.DateField(auto_now=True)
     number_of_classroom = models.CharField(default="Online only!")
     creator = models.ForeignKey(
