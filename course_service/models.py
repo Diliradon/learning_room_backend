@@ -1,9 +1,6 @@
 from django.db import models
 from learning_room_service.settings import AUTH_USER_MODEL
-
-
-class Task(models.Model):
-    pass
+from task_service.models import Task
 
 
 class Course(models.Model):
