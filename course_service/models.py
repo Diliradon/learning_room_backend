@@ -33,7 +33,6 @@ class Course(models.Model):
         blank=True,
         related_name="studying_courses"
     )
-    tasks = models.ManyToManyField(Task, blank=True)
 
     class Meta:
         ordering = ["-created_date", "name"]
