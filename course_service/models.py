@@ -1,6 +1,5 @@
 from django.db import models
 from learning_room_service.settings import AUTH_USER_MODEL
-from task_service.models import Task
 
 
 class Course(models.Model):
@@ -24,7 +23,6 @@ class Course(models.Model):
         blank=True,
         related_name="studying_courses"
     )
-    tasks = models.ManyToManyField(Task, blank=True)
 
     class Meta:
         ordering = ["-created_date", "name"]
