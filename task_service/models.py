@@ -29,6 +29,7 @@ class Task(models.Model):
     answer_file = models.FileField(upload_to="uploads/", null=False, blank=True)
     answer_image = models.ImageField(upload_to="images/", null=False, blank=True)
     rating = models.IntegerField(choices=CHOICES_RATING, blank=False, null=False)
+    note = models.IntegerField(null=True, blank=True)
     for_whom = models.IntegerField(choices=CHOICES_FOR_WHOM, blank=False, null=False)
     students = models.ManyToManyField(
         AUTH_USER_MODEL,
