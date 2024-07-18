@@ -18,7 +18,7 @@ from course_service.models import Course
 class TeachingCourseViewSet(
     viewsets.ModelViewSet
 ):
-    queryset = Course.objects.prefetch_related("students", "teachers", "tasks")
+    queryset = Course.objects.prefetch_related("students", "teachers")
 
     def get_serializer_class(self):
 
@@ -39,7 +39,7 @@ class TeachingCourseViewSet(
         self.queryset.distinct()
 
         user = self.request.user
-        return user.teaching_courses.prefetch_related("students", "teachers", "tasks")
+        return user.teaching_courses.prefetch_related("students", "teachers")
 
     def perform_create(self, serializer):
         course = serializer.save(creator=self.request.user)
@@ -72,7 +72,7 @@ class StudyingCourseViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
 ):
-    queryset = Course.objects.prefetch_related("students", "teachers", "tasks")
+    queryset = Course.objects.prefetch_related("students", "teachers")
 
     def get_serializer_class(self):
 
@@ -103,7 +103,7 @@ class StudyingCourseViewSet(
         self.queryset.distinct()
 
         user = self.request.user
-        return user.studying_courses.prefetch_related("students", "teachers", "tasks")
+        return user.studying_courses.prefetch_related("students", "teachers")
 
     @action(
         methods=["POST"],

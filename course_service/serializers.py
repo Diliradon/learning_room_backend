@@ -47,7 +47,6 @@ class TeachingCourseDetailSerializer(serializers.ModelSerializer):
             "created_date",
             "teachers",
             "students",
-            "tasks"
         )
 
 
@@ -83,5 +82,4 @@ class StudyingCourseDetailSerializer(serializers.ModelSerializer):
             "created_date",
             "teachers",
             "students",
-            "tasks",
         )
