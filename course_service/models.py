@@ -4,10 +4,6 @@ from learning_room_service.settings import AUTH_USER_MODEL
 LENGTH_UNIQUE_KEY = 6
 
 
-class Task(models.Model):
-    pass
-
-
 class Course(models.Model):
     name = models.CharField(null=False, blank=False, max_length=100)
     description = models.TextField(null=False, blank=True)

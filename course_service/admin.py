@@ -1,5 +1,4 @@
 from django.contrib import admin
-from course_service.models import Course, Task
+from course_service.models import Course
 
 admin.site.register(Course)
-admin.site.register(Task)
