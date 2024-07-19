@@ -1,11 +1,17 @@
 from django.db import models
 from learning_room_service.settings import AUTH_USER_MODEL
 
+LENGTH_UNIQUE_KEY = 6
+
 
 class Course(models.Model):
     name = models.CharField(null=False, blank=False, max_length=100)
     description = models.TextField(null=False, blank=True)
-    unique_key = models.CharField(max_length=22, unique=True, blank=True)
+    unique_key = models.CharField(
+        max_length=LENGTH_UNIQUE_KEY,
+        unique=True,
+        blank=True
+    )
     created_date = models.DateField(auto_now=True)
     number_of_classroom = models.CharField(default="Online only!")
     creator = models.ForeignKey(

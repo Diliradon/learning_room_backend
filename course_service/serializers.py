@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from course_service.models import Course
+from course_service.models import Course, LENGTH_UNIQUE_KEY
 from task_service.serializers import TeachingTaskListSerializer
 
 
@@ -65,8 +65,8 @@ class JoinToCourseByKeySerializer(serializers.Serializer):
 
     def validate_unique_key(self, value):
 
-        if len(value) != 22:
-            raise serializers.ValidationError("Unique key must be 22 characters long!")
+        if len(value) != LENGTH_UNIQUE_KEY:
+            raise serializers.ValidationError(f"Unique key must be {LENGTH_UNIQUE_KEY} characters long!")
 
         return value
 
