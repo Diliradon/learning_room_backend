@@ -8,10 +8,14 @@ from course_service.urls import router
 
 course_router = routers.NestedDefaultRouter(router, r"teaching-courses", lookup="course")
 course_router.register("teaching-tasks", TeachingTaskViewSet, basename="teaching-tasks")
-course_router.register("students", get_course_students, basename="students")
 
 urlpatterns = [
-    path("", include(course_router.urls))
+    path("", include(course_router.urls)),
+    path(
+        "teaching-courses/<int:course_pk>/students/",
+        get_course_students,
+        name="course-students"
+    ),
 ]
 
 app_name = "task-service"
