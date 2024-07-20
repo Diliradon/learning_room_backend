@@ -1,8 +1,25 @@
+import os
+import uuid
+
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.text import slugify
+
 from learning_room_service.settings import AUTH_USER_MODEL
 from course_service.models import Course
-from user.models import  movie_image_file_path
+
+
+def file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename = f"{slugify(instance.task.topic)}-{uuid.uuid4()}{extension}"
+    return os.path.join("uploads/files/", filename)
+
+
+def image_path(instance, filename):
+    """Generate file path for new task image"""
+    _, extension = os.path.splitext(filename)
+    filename = f"{slugify(instance.task.topic)}-{uuid.uuid4()}{extension}"
+    return os.path.join("uploads/images/", filename)
 
 
 class Task(models.Model):
@@ -71,14 +88,14 @@ class Review(models.Model):
 
 
 class Image(models.Model):
-    image = models.ImageField(upload_to=movie_image_file_path)
+    image = models.ImageField(upload_to=image_path)
 
     class Meta:
         abstract = True
 
 
 class File(models.Model):
-    file = models.FileField(upload_to=movie_image_file_path)
+    file = models.FileField(upload_to=file_path)
 
     class Meta:
         abstract = True
