@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-
 from learning_room_service.settings import AUTH_USER_MODEL
 from course_service.models import Course
+from user.models import  movie_image_file_path
 
 
 class Task(models.Model):
@@ -25,9 +25,8 @@ class Task(models.Model):
     type_of_task = models.IntegerField(choices=CHOICES_TYPE_OF_TASK, blank=False, null=False)
     topic = models.CharField(max_length=150, null=False, blank=False)
     additionally = models.TextField(blank=True, null=False)
-    answer_link = models.URLField(max_length=200, null=False, blank=True)
-    answer_file = models.FileField(upload_to="uploads/", null=False, blank=True)
-    answer_image = models.ImageField(upload_to="images/", null=False, blank=True)
+    task_link = models.URLField(max_length=200, null=True, blank=True)
+    answer_link = models.URLField(max_length=200, null=True, blank=True)
     rating = models.IntegerField(choices=CHOICES_RATING, blank=False, null=False)
     note = models.IntegerField(null=True, blank=True)
     for_whom = models.IntegerField(choices=CHOICES_FOR_WHOM, blank=False, null=False)
@@ -49,3 +48,23 @@ class Task(models.Model):
 
     def __str__(self):
         return self.topic
+
+
+class TaskFile(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_files")
+    file = models.FileField(upload_to=movie_image_file_path)
+
+
+class TaskImage(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_images")
+    image = models.ImageField(upload_to=movie_image_file_path)
+
+
+class AnswerFile(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="answer_files")
+    file = models.FileField(upload_to=movie_image_file_path)
+
+
+class AnswerImage(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="answer_images")
+    image = models.ImageField(upload_to=movie_image_file_path)
