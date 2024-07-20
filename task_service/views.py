@@ -9,6 +9,7 @@ from task_service.models import Task, TaskImage, TaskFile
 from task_service.serializers import (
     TeachingTaskListSerializer,
     TeachingTaskCreateUpdateSerializer,
+    TeachingTaskDetailSerializer,
 )
 
 
@@ -18,6 +19,9 @@ class TeachingTaskViewSet(viewsets.ModelViewSet):
 
         if self.action == "list":
             return TeachingTaskListSerializer
+
+        if self.action == "retrieve":
+            return TeachingTaskDetailSerializer
 
         if self.action in ["create", "update", "partial_update"]:
             return TeachingTaskCreateUpdateSerializer

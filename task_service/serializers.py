@@ -94,6 +94,27 @@ class TeachingTaskCreateUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
+class TeachingTaskDetailSerializer(serializers.ModelSerializer):
+    task_images = TaskImageSerializer(many=True, read_only=True)
+    task_files = TaskFileSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Task
+        fields = (
+            "id",
+            "topic",
+            "type_of_task",
+            "additionally",
+            "task_link",
+            "task_images",
+            "task_files",
+            "rating",
+            "for_whom",
+            "deadline",
+            "students",
+        )
+
+
 class TeachingTaskListSerializer(serializers.ModelSerializer):
 
     class Meta:
