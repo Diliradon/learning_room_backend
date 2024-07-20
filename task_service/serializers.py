@@ -36,9 +36,17 @@ class TaskFileSerializer(serializers.ModelSerializer):
         fields = ("id", "file")
 
 
-class TeachingTaskCreateSerializer(serializers.ModelSerializer):
-    task_files = TaskFileSerializer(many=True, write_only=True)
-    task_images = TaskImageSerializer(many=True, write_only=True)
+class TeachingTaskCreateUpdateSerializer(serializers.ModelSerializer):
+    task_files = serializers.ListField(
+        child=serializers.FileField(max_length=100000, allow_empty_file=False, use_url=False),
+        write_only=True,
+        required=False
+    )
+    task_images = serializers.ListField(
+        child=serializers.ImageField(max_length=100000, allow_empty_file=False, use_url=False),
+        write_only=True,
+        required=False
+    )
 
     class Meta:
         model = Task
@@ -55,6 +63,26 @@ class TeachingTaskCreateSerializer(serializers.ModelSerializer):
             "deadline",
             "students",
         )
+
+    def create(self, validated_data):
+        files_data = validated_data.pop('files', [])
+        images_data = validated_data.pop('images', [])
+        task = Task.objects.create(**validated_data)
+        for file_data in files_data:
+            TaskFile.objects.create(task=task, file=file_data)
+        for image_data in images_data:
+            TaskImage.objects.create(task=task, image=image_data)
+        return task
+
+    def update(self, instance, validated_data):
+        files_data = validated_data.pop('files', [])
+        images_data = validated_data.pop('images', [])
+        instance = super().update(instance, validated_data)
+        for file_data in files_data:
+            TaskFile.objects.create(task=instance, file=file_data)
+        for image_data in images_data:
+            TaskImage.objects.create(task=instance, image=image_data)
+        return instance
 
 
 class TeachingTaskListSerializer(serializers.ModelSerializer):

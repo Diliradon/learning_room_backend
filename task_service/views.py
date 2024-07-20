@@ -4,11 +4,11 @@ from rest_framework.response import Response
 from course_service.serializers import UserByDetailTeachingSerializer
 
 from course_service.models import Course
-from task_service.models import Task
+from task_service.models import Task, TaskImage, TaskFile
 
 from task_service.serializers import (
     TeachingTaskListSerializer,
-    TeachingTaskCreateSerializer,
+    TeachingTaskCreateUpdateSerializer,
 )
 
 
@@ -19,8 +19,8 @@ class TeachingTaskViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return TeachingTaskListSerializer
 
-        if self.action == "create":
-            return TeachingTaskCreateSerializer
+        if self.action in ["create", "update", "partial_update"]:
+            return TeachingTaskCreateUpdateSerializer
 
         return TeachingTaskListSerializer
 
@@ -32,8 +32,27 @@ class TeachingTaskViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        course_id = self.kwargs.get('course_pk')
-        serializer.save(course_id=course_id)
+        course_id = self.kwargs.get("course_pk")
+        task = serializer.save(course_id=course_id)
+
+        files = self.request.FILES.getlist("task_files")
+        for file in files:
+            TaskFile.objects.create(task=task, file=file)
+
+        images = self.request.FILES.getlist("task_images")
+        for image in images:
+            TaskImage.objects.create(task=task, image=image)
+
+    def perform_update(self, serializer):
+        task = serializer.save()
+
+        files = self.request.FILES.getlist("task_files")
+        for file in files:
+            TaskFile.objects.create(task=task, file=file)
+
+        images = self.request.FILES.getlist("task_images")
+        for image in images:
+            TaskImage.objects.create(task=task, image=image)
 
 
 @api_view(["GET"])
