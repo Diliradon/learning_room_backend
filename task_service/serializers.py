@@ -67,7 +67,12 @@ class TeachingTaskCreateUpdateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         files_data = validated_data.pop('files', [])
         images_data = validated_data.pop('images', [])
+        students_data = validated_data.pop('students', [])
+
         task = Task.objects.create(**validated_data)
+
+        task.students.set(students_data)
+
         for file_data in files_data:
             TaskFile.objects.create(task=task, file=file_data)
         for image_data in images_data:
@@ -77,7 +82,11 @@ class TeachingTaskCreateUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         files_data = validated_data.pop('files', [])
         images_data = validated_data.pop('images', [])
+        students_data = validated_data.pop('students', [])
+
         instance = super().update(instance, validated_data)
+
+        instance.students.set(students_data)
         for file_data in files_data:
             TaskFile.objects.create(task=instance, file=file_data)
         for image_data in images_data:
