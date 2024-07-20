@@ -26,9 +26,7 @@ class Task(models.Model):
     topic = models.CharField(max_length=150, null=False, blank=False)
     additionally = models.TextField(blank=True, null=False)
     task_link = models.URLField(max_length=200, null=True, blank=True)
-    answer_link = models.URLField(max_length=200, null=True, blank=True)
     rating = models.IntegerField(choices=CHOICES_RATING, blank=False, null=False)
-    note = models.IntegerField(null=True, blank=True)
     for_whom = models.IntegerField(choices=CHOICES_FOR_WHOM, blank=False, null=False)
     students = models.ManyToManyField(
         AUTH_USER_MODEL,
@@ -50,21 +48,53 @@ class Task(models.Model):
         return self.topic
 
 
-class TaskFile(models.Model):
+class Answer(models.Model):
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.CASCADE,
+        related_name="answers"
+    )
+    student = models.ForeignKey(
+        AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="answers"
+    )
+    answer_link = models.URLField(max_length=200, null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+
+
+class Review(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="reviews")
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="reviews")
+    note = models.IntegerField()
+    rationale = models.CharField(max_length=200, blank=True, null=True)
+
+
+class Image(models.Model):
+    image = models.ImageField(upload_to=movie_image_file_path)
+
+    class Meta:
+        abstract = True
+
+
+class File(models.Model):
+    file = models.FileField(upload_to=movie_image_file_path)
+
+    class Meta:
+        abstract = True
+
+
+class TaskFile(File):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_files")
-    file = models.FileField(upload_to=movie_image_file_path)
 
 
-class TaskImage(models.Model):
+class TaskImage(Image):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_images")
-    image = models.ImageField(upload_to=movie_image_file_path)
 
 
-class AnswerFile(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="answer_files")
-    file = models.FileField(upload_to=movie_image_file_path)
+class AnswerFile(File):
+    task = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="answer_files")
 
 
-class AnswerImage(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="answer_images")
-    image = models.ImageField(upload_to=movie_image_file_path)
+class AnswerImage(Image):
+    task = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="answer_images")

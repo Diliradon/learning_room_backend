@@ -8,7 +8,7 @@ from task_service.models import Task
 
 from task_service.serializers import (
     TeachingTaskListSerializer,
-    TaskSerializer,
+    TeachingTaskCreateSerializer,
 )
 
 
@@ -19,7 +19,10 @@ class TeachingTaskViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return TeachingTaskListSerializer
 
-        return TaskSerializer
+        if self.action == "create":
+            return TeachingTaskCreateSerializer
+
+        return TeachingTaskListSerializer
 
     def get_queryset(self):
         queryset = Task.objects.all()
