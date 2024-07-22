@@ -37,15 +37,11 @@ class TaskFileSerializer(serializers.ModelSerializer):
 
 
 class TeachingTaskCreateUpdateSerializer(serializers.ModelSerializer):
-    task_files = serializers.ListField(
-        child=serializers.FileField(max_length=100000, allow_empty_file=False, use_url=False),
-        write_only=True,
-        required=False
+    task_file = serializers.FileField(
+        max_length=100000, allow_empty_file=False, use_url=False, write_only=True, required=False
     )
-    task_images = serializers.ListField(
-        child=serializers.ImageField(max_length=100000, allow_empty_file=False, use_url=False),
-        write_only=True,
-        required=False
+    task_image = serializers.ImageField(
+        max_length=100000, allow_empty_file=False, use_url=False, write_only=True, required=False
     )
 
     class Meta:
@@ -56,8 +52,8 @@ class TeachingTaskCreateUpdateSerializer(serializers.ModelSerializer):
             "type_of_task",
             "additionally",
             "task_link",
-            "task_images",
-            "task_files",
+            "task_image",
+            "task_file",
             "rating",
             "for_whom",
             "deadline",
@@ -65,31 +61,31 @@ class TeachingTaskCreateUpdateSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        files_data = validated_data.pop('files', [])
-        images_data = validated_data.pop('images', [])
+        file_data = validated_data.pop('task_file', None)
+        image_data = validated_data.pop('task_image', None)
         students_data = validated_data.pop('students', [])
 
         task = Task.objects.create(**validated_data)
 
         task.students.set(students_data)
 
-        for file_data in files_data:
+        if file_data:
             TaskFile.objects.create(task=task, file=file_data)
-        for image_data in images_data:
+        if image_data:
             TaskImage.objects.create(task=task, image=image_data)
         return task
 
     def update(self, instance, validated_data):
-        files_data = validated_data.pop('files', [])
-        images_data = validated_data.pop('images', [])
+        file_data = validated_data.pop('task_file', None)
+        image_data = validated_data.pop('task_image', None)
         students_data = validated_data.pop('students', [])
 
         instance = super().update(instance, validated_data)
 
         instance.students.set(students_data)
-        for file_data in files_data:
+        if file_data:
             TaskFile.objects.create(task=instance, file=file_data)
-        for image_data in images_data:
+        if image_data:
             TaskImage.objects.create(task=instance, image=image_data)
         return instance
 
