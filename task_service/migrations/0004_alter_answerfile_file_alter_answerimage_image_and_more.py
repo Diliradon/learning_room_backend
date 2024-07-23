@@ -14,24 +14,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name="answerfile",
-            name="file",
-            field=models.FileField(upload_to=task_service.models.file_path),
-        ),
-        migrations.AlterField(
-            model_name="answerimage",
-            name="image",
-            field=models.ImageField(upload_to=task_service.models.image_path),
-        ),
-        migrations.AlterField(
-            model_name="taskfile",
-            name="file",
-            field=models.FileField(upload_to=task_service.models.file_path),
-        ),
-        migrations.AlterField(
-            model_name="taskimage",
-            name="image",
-            field=models.ImageField(upload_to=task_service.models.image_path),
-        ),
+
     ]

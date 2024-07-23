@@ -9,17 +9,17 @@ from learning_room_service.settings import AUTH_USER_MODEL
 from course_service.models import Course
 
 
-def file_path(instance, filename):
+def media_path(instance, filename):
     _, extension = os.path.splitext(filename)
     filename = f"{slugify(instance.task.topic)}-{uuid.uuid4()}{extension}"
-    return os.path.join("uploads/files/", filename)
+    return os.path.join("uploads/", filename)
 
 
-def image_path(instance, filename):
-    """Generate file path for new task image"""
-    _, extension = os.path.splitext(filename)
-    filename = f"{slugify(instance.task.topic)}-{uuid.uuid4()}{extension}"
-    return os.path.join("uploads/images/", filename)
+class LearningFile(models.Model):
+    model = models.CharField(max_length=30)
+    type = models.CharField(max_length=30)
+    instance_id = models.IntegerField()
+    file = models.FileField(upload_to=media_path)
 
 
 class Task(models.Model):
@@ -53,6 +53,10 @@ class Task(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="tasks")
     deadline = models.DateTimeField(null=True, blank=True)
 
+    @property
+    def task_files(self):
+        return LearningFile.objects.filter(type="file", model="Task", instance_id=self.pk)
+
     def clean(self):
         if self.for_whom == 1 and self.students.exists():
             raise ValidationError("You cannot select students when 'for_whom' is set to 'All students'.")
@@ -81,37 +85,6 @@ class Answer(models.Model):
 
 
 class Review(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="reviews")
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="reviews")
     note = models.IntegerField()
     rationale = models.CharField(max_length=200, blank=True, null=True)
-
-
-class Image(models.Model):
-    image = models.ImageField(upload_to=image_path)
-
-    class Meta:
-        abstract = True
-
-
-class File(models.Model):
-    file = models.FileField(upload_to=file_path)
-
-    class Meta:
-        abstract = True
-
-
-class TaskFile(File):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_files")
-
-
-class TaskImage(Image):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_images")
-
-
-class AnswerFile(File):
-    task = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="answer_files")
-
-
-class AnswerImage(Image):
-    task = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="answer_images")
