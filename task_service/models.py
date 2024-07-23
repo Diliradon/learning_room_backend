@@ -16,8 +16,16 @@ def media_path(instance, filename):
 
 
 class LearningFile(models.Model):
-    model = models.CharField(max_length=30)
-    type = models.CharField(max_length=30)
+    CHOICES_MODEL = (
+        ("Task", "Task"),
+        ("Answer", "Answer"),
+    )
+    CHOICES_TYPE = (
+        ("file", "file"),
+        ("image", "image"),
+    )
+    model = models.CharField(max_length=30, choices=CHOICES_MODEL)
+    type = models.CharField(max_length=30, choices=CHOICES_TYPE)
     instance_id = models.IntegerField()
     file = models.FileField(upload_to=media_path)
 
@@ -56,6 +64,10 @@ class Task(models.Model):
     @property
     def task_files(self):
         return LearningFile.objects.filter(type="file", model="Task", instance_id=self.pk)
+
+    @property
+    def task_imges(self):
+        return LearningFile.objects.filter(type="image", model="Task", instance_id=self.pk)
 
     def clean(self):
         if self.for_whom == 1 and self.students.exists():
