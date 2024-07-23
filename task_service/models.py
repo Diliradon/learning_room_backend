@@ -11,8 +11,8 @@ from course_service.models import Course
 
 def media_path(instance, filename):
     _, extension = os.path.splitext(filename)
-    filename = f"{slugify(instance.task.topic)}-{uuid.uuid4()}{extension}"
-    return os.path.join("uploads/", filename)
+    filename = f"{slugify(instance.model)}-{uuid.uuid4()}{extension}"
+    return os.path.join("uploads/task/", filename)
 
 
 class LearningFile(models.Model):
@@ -66,7 +66,7 @@ class Task(models.Model):
         return LearningFile.objects.filter(type="file", model="Task", instance_id=self.pk)
 
     @property
-    def task_imges(self):
+    def task_images(self):
         return LearningFile.objects.filter(type="image", model="Task", instance_id=self.pk)
 
     def clean(self):
