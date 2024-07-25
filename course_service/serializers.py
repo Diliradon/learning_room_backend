@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from course_service.models import Course, LENGTH_UNIQUE_KEY
-from task_service.serializers import TeachingTaskListSerializer
+from task_service.serializers import TaskListSerializer
 
 
 class TeachingCourseListSerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class UserByDetailTeachingSerializer(serializers.ModelSerializer):
 class TeachingCourseDetailSerializer(serializers.ModelSerializer):
     students = UserByDetailTeachingSerializer(many=True, read_only=False)
     teachers = UserByDetailTeachingSerializer(many=True, read_only=False)
-    tasks = TeachingTaskListSerializer(many=True, read_only=True)
+    tasks = TaskListSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course

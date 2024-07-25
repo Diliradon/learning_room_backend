@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from course_service.serializers import UserByDetailTeachingSerializer
@@ -7,9 +7,10 @@ from course_service.models import Course
 from task_service.models import Task
 
 from task_service.serializers import (
-    TeachingTaskListSerializer,
+    TaskListSerializer,
     TeachingTaskCreateUpdateSerializer,
     TeachingTaskDetailSerializer,
+    StudyingTaskDetailSerializer,
 )
 
 
@@ -18,7 +19,7 @@ class TeachingTaskViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
 
         if self.action == "list":
-            return TeachingTaskListSerializer
+            return TaskListSerializer
 
         if self.action == "retrieve":
             return TeachingTaskDetailSerializer
@@ -26,7 +27,7 @@ class TeachingTaskViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update"]:
             return TeachingTaskCreateUpdateSerializer
 
-        return TeachingTaskListSerializer
+        return TaskListSerializer
 
     def get_queryset(self):
         queryset = Task.objects.all()
@@ -37,7 +38,7 @@ class TeachingTaskViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         course_id = self.kwargs.get("course_pk")
-        task = serializer.save(course_id=course_id)
+        serializer.save(course_id=course_id)
 
 
 @api_view(["GET"])
@@ -53,3 +54,26 @@ def get_course_students(request, course_pk):
     students = course.students.all()
     serializer = UserByDetailTeachingSerializer(students, many=True)
     return Response(serializer.data)
+
+
+class StudyingTaskViewSet(
+    viewsets.GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+):
+    queryset = Task.objects.select_related("course").prefetch_related("students")
+
+    def get_serializer_class(self):
+
+        if self.action == "retrieve":
+            return StudyingTaskDetailSerializer
+
+        return TaskListSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        course_id = self.kwargs.get('course_pk')
+        queryset = queryset.filter(course_id=course_id, students=self.request.user)
+
+        return queryset
+

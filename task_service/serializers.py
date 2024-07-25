@@ -131,7 +131,23 @@ class TeachingTaskDetailSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-class TeachingTaskListSerializer(serializers.ModelSerializer):
+class StudyingTaskDetailSerializer(TeachingTaskDetailSerializer):
+
+    class Meta(TeachingTaskDetailSerializer.Meta):
+        fields = (
+            "id",
+            "topic",
+            "type_of_task",
+            "additionally",
+            "task_link",
+            "task_files",
+            "task_images",
+            "rating",
+            "deadline",
+        )
+
+
+class TaskListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
