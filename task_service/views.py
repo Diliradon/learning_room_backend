@@ -11,7 +11,7 @@ from task_service.serializers import (
     TeachingTaskCreateUpdateSerializer,
     TeachingTaskDetailSerializer,
     StudyingTaskDetailSerializer,
-    AnswerCreateUpdateDetailSerializer,
+    AnswerCreateUpdateSerializer, AnswerSerializer,
 )
 
 
@@ -79,19 +79,18 @@ class StudyingTaskViewSet(
         return queryset
 
 
-class StudyingAnswerViewSet(
-    viewsets.GenericViewSet,
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.RetrieveModelMixin,
-):
+class StudyingAnswerViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return Answer.objects.filter(stydent=user)
+        return Answer.objects.filter(student=user)
 
     def get_serializer_class(self):
-        return AnswerCreateUpdateDetailSerializer
+
+        if self.action in ("create", "update",):
+            return AnswerCreateUpdateSerializer
+
+        return AnswerSerializer
 
     def perform_create(self, serializer):
         task_id = self.kwargs.get("task_pk")

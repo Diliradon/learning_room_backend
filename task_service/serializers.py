@@ -220,5 +220,29 @@ class AnswerCreateUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-class AnswerDetailSerializer(serializers.ModelSerializer):
-    pass
+class AnswerSerializer(serializers.ModelSerializer):
+    task = TaskListSerializer(many=False, read_only=True)
+    answer_files = serializers.SerializerMethodField()
+    answer_images = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Answer
+        fields = (
+            "id",
+            "task",
+            "description",
+            "answer_images",
+            "answer_files",
+            "answer_link",
+            "status",
+        )
+
+    def get_answer_files(self, obj):
+        files = obj.answer_files
+        serializer = LearningFileSerializer(files, many=True, context={'request': self.context.get('request')})
+        return serializer.data
+
+    def get_answer_images(self, obj):
+        images = obj.answer_images
+        serializer = LearningFileSerializer(images, many=True, context={'request': self.context.get('request')})
+        return serializer.data

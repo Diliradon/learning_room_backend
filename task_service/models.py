@@ -100,6 +100,14 @@ class Answer(models.Model):
     description = models.TextField(blank=True, null=True)
     status = models.CharField(choices=CHOICES_STATUS, default="Done")
 
+    @property
+    def answer_files(self):
+        return LearningFile.objects.filter(type="file", model="Answer", instance_id=self.pk)
+
+    @property
+    def answer_images(self):
+        return LearningFile.objects.filter(type="image", model="Answer", instance_id=self.pk)
+
 
 class Review(models.Model):
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="reviews")
