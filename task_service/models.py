@@ -83,8 +83,8 @@ class Task(models.Model):
 
 class Answer(models.Model):
     CHOICES_STATUS = (
-        (True, "Done"),
-        (False, "Not Done")
+        ("Done", "Done"),
+        ("Not Done", "Not Done")
     )
     task = models.ForeignKey(
         Task,
@@ -98,7 +98,7 @@ class Answer(models.Model):
     )
     answer_link = models.URLField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    status = models.BooleanField(choices=CHOICES_STATUS, default="Done")
+    status = models.CharField(choices=CHOICES_STATUS, default="Done")
 
 
 class Review(models.Model):

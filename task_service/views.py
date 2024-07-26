@@ -4,13 +4,14 @@ from rest_framework.response import Response
 from course_service.serializers import UserByDetailTeachingSerializer
 
 from course_service.models import Course
-from task_service.models import Task
+from task_service.models import Task, Answer
 
 from task_service.serializers import (
     TaskListSerializer,
     TeachingTaskCreateUpdateSerializer,
     TeachingTaskDetailSerializer,
     StudyingTaskDetailSerializer,
+    AnswerCreateUpdateDetailSerializer,
 )
 
 
@@ -76,4 +77,24 @@ class StudyingTaskViewSet(
         queryset = queryset.filter(course_id=course_id, students=self.request.user)
 
         return queryset
+
+
+class StudyingAnswerViewSet(
+    viewsets.GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin,
+):
+
+    def get_queryset(self):
+        user = self.request.user
+        return Answer.objects.filter(stydent=user)
+
+    def get_serializer_class(self):
+        return AnswerCreateUpdateDetailSerializer
+
+    def perform_create(self, serializer):
+        task_id = self.kwargs.get("task_pk")
+        user_pk = self.request.user.pk
+        serializer.save(task_id=task_id, student_id=user_pk)
 

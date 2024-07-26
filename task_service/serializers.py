@@ -2,6 +2,7 @@ from rest_framework import serializers
 from task_service.models import (
     Task,
     LearningFile,
+    Answer
 )
 
 
@@ -152,3 +153,72 @@ class TaskListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ("id", "topic", "rating", "deadline")
+
+
+class AnswerCreateUpdateSerializer(serializers.ModelSerializer):
+    answer_file = serializers.FileField(
+        max_length=100000,
+        allow_empty_file=False,
+        use_url=False,
+        write_only=True,
+        required=False
+    )
+    answer_image = serializers.ImageField(
+        max_length=100000,
+        allow_empty_file=False,
+        use_url=False,
+        write_only=True,
+        required=False
+    )
+
+    class Meta:
+        model = Answer
+        fields = ("id", "description", "answer_file", "answer_image", "answer_link")
+
+    def create(self, validated_data):
+        file_data = validated_data.pop("answer_file", None)
+        image_data = validated_data.pop("answer_image", None)
+
+        answer = Answer.objects.create(**validated_data)
+
+        if file_data:
+            LearningFile.objects.create(
+                model="Answer",
+                type="file",
+                instance_id=answer.pk,
+                file=file_data
+            )
+        if image_data:
+            LearningFile.objects.create(
+                model="Answer",
+                type="image",
+                instance_id=answer.pk,
+                file=image_data
+            )
+        return answer
+
+    def update(self, instance, validated_data):
+        file_data = validated_data.pop("task_file", None)
+        image_data = validated_data.pop("task_image", None)
+
+        instance = super().update(instance, validated_data)
+
+        if file_data:
+            LearningFile.objects.create(
+                model="Answer",
+                type="file",
+                instance_id=instance.pk,
+                file=file_data
+            )
+        if image_data:
+            LearningFile.objects.create(
+                model="Answer",
+                type="image",
+                instance_id=instance.pk,
+                file=image_data
+            )
+        return instance
+
+
+class AnswerDetailSerializer(serializers.ModelSerializer):
+    pass
