@@ -98,7 +98,7 @@ class Answer(models.Model):
     )
     answer_link = models.URLField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    status = models.CharField(choices=CHOICES_STATUS, default="Done")
+    status = models.CharField(choices=CHOICES_STATUS, default="Not Done")
 
     @property
     def answer_files(self):

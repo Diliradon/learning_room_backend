@@ -96,4 +96,3 @@ class StudyingAnswerViewSet(viewsets.ModelViewSet):
         task_id = self.kwargs.get("task_pk")
         user_pk = self.request.user.pk
         serializer.save(task_id=task_id, student_id=user_pk)
-
