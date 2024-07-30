@@ -110,6 +110,12 @@ class Answer(models.Model):
 
 
 class Review(models.Model):
+    teacher = models.ForeignKey(
+        AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        default=None
+    )
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name="reviews")
     note = models.IntegerField()
     rationale = models.CharField(max_length=200, blank=True, null=True)
