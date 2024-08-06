@@ -229,7 +229,7 @@ class AnswerCreateUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ReviewNestedSerializer(serializers.ModelSerializer):
     teachers = UserSerializer(read_only=True, many=True)
 
     class Meta:
@@ -241,7 +241,7 @@ class AnswerDetailSerializer(serializers.ModelSerializer):
     task = TaskListSerializer(many=False, read_only=True)
     answer_files = serializers.SerializerMethodField()
     answer_images = serializers.SerializerMethodField()
-    reviews = ReviewSerializer(many=True, read_only=True)
+    reviews = ReviewNestedSerializer(many=True, read_only=True)
 
     class Meta:
         model = Answer
@@ -269,8 +269,31 @@ class AnswerDetailSerializer(serializers.ModelSerializer):
 
 class AnswerSerializer(serializers.ModelSerializer):
     task = TaskListSerializer(many=False, read_only=True)
-    reviews = ReviewSerializer(many=True, read_only=True)
+    reviews = ReviewNestedSerializer(many=True, read_only=True)
 
     class Meta:
         model = Answer
         fields = ("id", "task", "status", "reviews")
+
+
+class AnswerNestedSerializer(serializers.ModelSerializer):
+    task = TaskListSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Answer
+        fields = ("id", "task", "status")
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields = ("id", "note", "rationale")
+
+
+class ReviewDetailSerializer(serializers.ModelSerializer):
+    task = AnswerSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Review
+        fields = ("id", "note", "rationale", )

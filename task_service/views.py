@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from course_service.serializers import UserByDetailTeachingSerializer
 
 from course_service.models import Course
-from task_service.models import Task, Answer
+from task_service.models import Task, Answer, Review
 
 from task_service.serializers import (
     TaskListSerializer,
@@ -13,7 +13,7 @@ from task_service.serializers import (
     StudyingTaskDetailSerializer,
     AnswerCreateUpdateSerializer,
     AnswerDetailSerializer,
-    AnswerSerializer,
+    AnswerSerializer, ReviewSerializer, ReviewDetailSerializer,
 )
 
 
@@ -117,3 +117,27 @@ class TeachingAnswerViewSet(
             return AnswerDetailSerializer
 
         return AnswerSerializer
+
+
+class TeachingReviewViewSet(viewsets.ModelViewSet):
+
+    def get_serializer_class(self):
+
+        if self.action == "retrieve":
+            return ReviewDetailSerializer
+
+        return ReviewSerializer
+
+    def get_queryset(self):
+        answer_id = self.kwargs.get("answer_pk")
+
+        return Review.objects.filter(answer_id=answer_id)
+
+    def perform_create(self, serializer):
+        teacher_id = self.request.user.pk
+        answer_id = self.kwargs.get("answer_pk")
+        serializer.save(teacher_id=teacher_id, answer_id=answer_id)
+
+    def perform_update(self, serializer):
+        teacher_id = self.request.user.pk
+        serializer.save(teacher_id=teacher_id)

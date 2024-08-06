@@ -4,7 +4,9 @@ from task_service.views import (
     TeachingTaskViewSet,
     get_course_students,
     StudyingTaskViewSet,
-    StudyingAnswerViewSet, TeachingAnswerViewSet,
+    StudyingAnswerViewSet,
+    TeachingAnswerViewSet,
+    TeachingReviewViewSet,
 )
 from course_service.urls import router
 
@@ -47,9 +49,20 @@ teaching_task_router = routers.NestedDefaultRouter(
     lookup="task",
 )
 teaching_task_router.register(
-    "teaching-answer",
+    "teaching-answers",
     TeachingAnswerViewSet,
     "teaching-answers",
+)
+
+teaching_answer_router = routers.NestedDefaultRouter(
+    teaching_task_router,
+    "teaching-answers",
+    lookup="answer"
+)
+teaching_answer_router.register(
+    "teaching-reviews",
+    TeachingReviewViewSet,
+    "teaching-reviews",
 )
 
 
