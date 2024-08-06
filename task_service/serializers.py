@@ -1,9 +1,18 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from task_service.models import (
     Task,
     LearningFile,
-    Answer
+    Answer,
+    Review,
 )
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ("first_name", "last_name")
 
 
 class LearningFileSerializer(serializers.ModelSerializer):
@@ -220,10 +229,19 @@ class AnswerCreateUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class ReviewSerializer(serializers.ModelSerializer):
+    teachers = UserSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Review
+        fields = ("id", "note", "rationale", "teachers")
+
+
+class AnswerDetailSerializer(serializers.ModelSerializer):
     task = TaskListSerializer(many=False, read_only=True)
     answer_files = serializers.SerializerMethodField()
     answer_images = serializers.SerializerMethodField()
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Answer
@@ -235,6 +253,7 @@ class AnswerSerializer(serializers.ModelSerializer):
             "answer_files",
             "answer_link",
             "status",
+            "reviews",
         )
 
     def get_answer_files(self, obj):
@@ -246,3 +265,12 @@ class AnswerSerializer(serializers.ModelSerializer):
         images = obj.answer_images
         serializer = LearningFileSerializer(images, many=True, context={'request': self.context.get('request')})
         return serializer.data
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    task = TaskListSerializer(many=False, read_only=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Answer
+        fields = ("id", "task", "status", "reviews")
