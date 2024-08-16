@@ -30,7 +30,7 @@ class LoginAPIView(APIView):
         user = authenticate(username=serializer.data['email'], password=serializer.data['password'])
         if user is not None:
             login(request, user)
-            return redirect("user:current-user")
+            return Response({"message": "Login is successfully"}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -68,7 +68,7 @@ class ChangeUserPasswordAPIView(APIView):
 
             user.set_password(new_password)
             user.save()
-            return redirect("user:login")
+            return Response({"message": "Password is changed successfully"})
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
