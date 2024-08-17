@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -18,6 +17,9 @@ class RegisterAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        user = authenticate(username=request.data['email'], password=request.data['password'])
+        if user is not None:
+            login(request, user)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
