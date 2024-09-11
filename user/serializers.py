@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+import re
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -23,6 +24,45 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+    def check_name(self, value):
+
+        if not value.isalpha():
+            raise serializers.ValidationError(
+                "The name must contain only letters"
+            )
+
+        elif (
+                not bool(re.fullmatch("[A-Za-z]+", value))
+                or bool(re.fullmatch(r'[À-ÙÜÞßª²¯¥à-ùüþÿº³¿´]+', value))
+        ):
+            raise serializers.ValidationError(
+                "The name must contain only English letters or Cyrillic"
+            )
+
+        elif len(value) < 2:
+            raise serializers.ValidationError(
+                "The length should be longer than 1"
+            )
+
+        elif len(value) > 31:
+            raise serializers.ValidationError(
+                "The length should be lower than 1"
+            )
+
+        elif value[1].islower():
+            raise serializers.ValidationError(
+                "The first letter of the name must be capitalized"
+            )
+
+    def validate(self, attrs):
+        first_name = attrs.get("first_name")
+        last_name = attrs.get("last_name")
+
+        self.check_name(first_name)
+        self.check_name(last_name)
+
+        return attrs
 
 
 class LoginSerializer(serializers.Serializer):
