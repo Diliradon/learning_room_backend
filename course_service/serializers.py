@@ -4,11 +4,19 @@ from course_service.models import Course, LENGTH_UNIQUE_KEY
 from task_service.serializers import TaskListSerializer
 
 
+class UserByDetailTeachingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ("first_name", "last_name")
+
+
 class TeachingCourseListSerializer(serializers.ModelSerializer):
+    teachers = UserByDetailTeachingSerializer(many=True, read_only=False)
 
     class Meta:
         model = Course
-        fields = ("id", "name", "description", "unique_key", "created_date")
+        fields = ("id", "name", "description", "unique_key", "created_date", "teachers")
 
 
 class TeachingCourseCreateSerializer(serializers.ModelSerializer):
@@ -24,13 +32,6 @@ class TeachingCourseCreateSerializer(serializers.ModelSerializer):
             "students",
             "number_of_classroom",
         )
-
-
-class UserByDetailTeachingSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = get_user_model()
-        fields = ("first_name", "last_name")
 
 
 class TeachingCourseDetailSerializer(serializers.ModelSerializer):
@@ -54,10 +55,11 @@ class TeachingCourseDetailSerializer(serializers.ModelSerializer):
 
 
 class StudyingCourseListSerializer(serializers.ModelSerializer):
+    teachers = UserByDetailTeachingSerializer(many=True, read_only=False)
 
     class Meta:
         model = Course
-        fields = ("id", "name", "description", "number_of_classroom")
+        fields = ("id", "name", "description", "number_of_classroom", "teachers")
 
 
 class JoinToCourseByKeySerializer(serializers.Serializer):
