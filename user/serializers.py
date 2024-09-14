@@ -33,12 +33,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
                 "The name must contain only letters"
             )
 
-        elif (
-                not bool(re.fullmatch("[A-Za-z]+", value))
-                or bool(re.fullmatch(r'[À-ÙÜÞßª²¯¥à-ùüþÿº³¿´]+', value))
-        ):
+        elif not bool(re.fullmatch(r"[A-Za-z]+", value)):
             raise serializers.ValidationError(
-                "The name must contain only English letters or Cyrillic"
+                "The name must contain only English letters or Cyrillic letters, but not both"
             )
 
         elif len(value) < 2:
@@ -51,7 +48,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
                 "The length should be lower than 1"
             )
 
-        elif value[1].islower():
+        elif value[0].islower():
             raise serializers.ValidationError(
                 "The first letter of the name must be capitalized"
             )
@@ -104,7 +101,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
                 "The email must contain the domain's name"
             )
 
-        elif not bool(re.fullmatch("[a-z0-9]+", user_name)):
+        elif not bool(re.fullmatch(r"[a-z0-9]+", user_name)):
             raise serializers.ValidationError(
                 "The username in the email must consist "
                 "of English lowercase letters and numbers only"
@@ -121,7 +118,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
         for part in domain_parts:
 
-            if not re.fullmatch("[a-z]+", part):
+            if not re.fullmatch(r"[a-z]+", part):
                 raise serializers.ValidationError(
 
                     "The domain must consist of English lowercase letters only"
