@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 import re
+from user.models import User
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -63,6 +64,69 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         self.check_name(last_name)
 
         return attrs
+
+    def validate_email(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                "The email can't be blank"
+            )
+
+        elif len(value) > 125:
+            raise serializers.ValidationError(
+                "Email must be less than 126 characters long"
+            )
+
+        elif User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "The user with this email address is already registered"
+            )
+
+        elif not ("@" in value):
+            raise serializers.ValidationError(
+                "The '@' symbol must be in email"
+            )
+
+        elif value.startswith("@"):
+            raise serializers.ValidationError(
+                "The email must contain the user's name"
+            )
+
+        elif len(value.split("@")) != 2:
+            raise serializers.ValidationError(
+                "Invalid email format"
+            )
+
+        user_name = value.split("@")[0]
+        domain = value.split("@")[1]
+
+        if not ("." in domain):
+            raise serializers.ValidationError(
+                "The email must contain the domain's name"
+            )
+
+        elif not bool(re.fullmatch("[a-z0-9]+", user_name)):
+            raise serializers.ValidationError(
+                "The username in the email must consist "
+                "of English lowercase letters and numbers only"
+            )
+
+        domain_parts = domain.split(".")
+
+        if len(domain_parts) < 2:
+            raise serializers.ValidationError(
+
+                "The domain must contain at least one dot"
+
+            )
+
+        for part in domain_parts:
+
+            if not re.fullmatch("[a-z]+", part):
+                raise serializers.ValidationError(
+
+                    "The domain must consist of English lowercase letters only"
+
+                )
 
 
 class LoginSerializer(serializers.Serializer):
