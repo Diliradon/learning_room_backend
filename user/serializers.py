@@ -128,6 +128,52 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
                 )
 
+        return value
+
+    def validate_password(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                "The password can't be blank"
+            )
+
+        elif len(value) < 6:
+            raise serializers.ValidationError(
+                "The length of password can't be less than 6 characters"
+            )
+
+        elif len(value) > 40:
+            raise serializers.ValidationError(
+                "The length of password must be less than 41 characters"
+            )
+
+        elif not any(char.isupper() for char in value):
+            raise serializers.ValidationError(
+                "The password must contain at least one capital letter"
+            )
+
+        elif not any(char in "!@#$%^&*-_" for char in value):
+            raise serializers.ValidationError(
+                "The password must contain at least one special character"
+                " (!, @, #, $, %, ^, &, *, -, _)"
+            )
+
+        elif not any(char in "1234567890" for char in value):
+            raise serializers.ValidationError(
+                "The password must contain at least one number"
+            )
+
+        elif " " in value:
+            raise serializers.ValidationError(
+                "The password can't contain spaces"
+            )
+
+        elif "." in value:
+            raise serializers.ValidationError(
+                "The password can't contain dots"
+            )
+
+        return value
+
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
