@@ -179,6 +179,29 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
+    def validate_email(self, value):
+
+        if not value:
+            raise serializers.ValidationError(
+                "The email field can't be blank"
+            )
+
+        elif not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "User with this email does not exist"
+            )
+
+        return value
+
+    def validate_password(self, value):
+
+        if not value:
+            raise serializers.ValidationError(
+                "The password field can't be blank"
+            )
+
+        return value
+
 
 class UserSerializer(serializers.ModelSerializer):
 
