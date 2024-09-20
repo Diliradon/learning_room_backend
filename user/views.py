@@ -1,10 +1,16 @@
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from .serializers import RegisterUserSerializer, LoginSerializer, UserSerializer, ChangeUserPasswordSerializer
+from .serializers import (
+    RegisterUserSerializer,
+    LoginSerializer,
+    UserSerializer,
+    ChangeUserPasswordSerializer,
+)
 
 
 class RegisterAPIView(generics.CreateAPIView):
@@ -74,3 +80,21 @@ class ChangeUserPasswordAPIView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(["GET"])
+def check_email(request):
+    email = request.query_params.get("email")
+
+    if not email:
+        return Response({"message": "Email is required"}, status=400)
+
+    user_exists = get_user_model().objects.filter(email=email).exists()
+
+    if user_exists:
+        return Response(
+            {"message": "The user with the given email address is already registered in the system"}
+        )
+
+    return Response(
+        {"message": "The user with the given email address is not yet registered in the system"}
+    )

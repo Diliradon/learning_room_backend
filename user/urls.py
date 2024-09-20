@@ -3,7 +3,9 @@ from user.views import (
     RegisterAPIView,
     LoginAPIView,
     LogoutAPIView,
-    CurrentUserView, ChangeUserPasswordAPIView,
+    CurrentUserView,
+    ChangeUserPasswordAPIView,
+    check_email
 )
 
 urlpatterns = [
@@ -12,6 +14,7 @@ urlpatterns = [
     path("logout/", LogoutAPIView.as_view(), name="logout"),
     path("change-password/", ChangeUserPasswordAPIView.as_view(), name="change-password"),
     path("me/", CurrentUserView.as_view(), name="current-user"),
+    path("check-email/", check_email, name="check-email"),
 ]
 
 app_name = "user"
