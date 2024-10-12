@@ -5,12 +5,12 @@ LENGTH_UNIQUE_KEY = 6
 
 
 class Course(models.Model):
-    COLOR_CHOICES = (
-        ("secondary-400", "#A6DCEF"),
-        ("secondary-100", "#77D99F"),
-        ("secondary-200", "#FDB7AA"),
-        ("primary-100", "#D2ADE6"),
-        ("secondary-300", "#F9E783"),
+    CHOICES_COLOR = (
+        ("#A6DCEF", "secondary-100"),
+        ("#77D99F", "secondary-200"),
+        ("#FDB7AA", "secondary-300"),
+        ("#D2ADE6", "secondary-400"),
+        ("#F9E783", "primary-100"),
     )
 
     name = models.CharField(null=False, blank=False, max_length=100)
@@ -20,7 +20,12 @@ class Course(models.Model):
         unique=True,
         blank=True
     )
-    color = models.CharField(null=False, blank=False, default="secondary-400")
+    color = models.CharField(
+        null=False,
+        blank=False,
+        choices=CHOICES_COLOR,
+        default="secondary-400"
+    )
     created_date = models.DateField(auto_now=True)
     number_of_classroom = models.CharField(default="Online only!")
     creator = models.ForeignKey(
