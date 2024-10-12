@@ -16,7 +16,7 @@ class TeachingCourseListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("id", "name", "description", "unique_key", "created_date", "teachers")
+        fields = ("id", "name", "description", "color", "unique_key", "created_date", "teachers")
 
 
 class TeachingCourseCreateSerializer(serializers.ModelSerializer):
@@ -46,6 +46,7 @@ class TeachingCourseDetailSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "unique_key",
+            "color",
             "number_of_classroom",
             "created_date",
             "teachers",
