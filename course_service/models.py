@@ -24,7 +24,7 @@ class Course(models.Model):
         null=False,
         blank=False,
         choices=CHOICES_COLOR,
-        default="secondary-400"
+        default="#A6DCEF"
     )
     created_date = models.DateField(auto_now=True)
     number_of_classroom = models.CharField(default="Online only!")
