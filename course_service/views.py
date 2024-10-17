@@ -8,6 +8,7 @@ from course_service.serializers import (
     TeachingCourseListSerializer,
     TeachingCourseCreateSerializer,
     TeachingCourseDetailSerializer,
+    TeachingCourseUpdateSerializer,
     StudyingCourseListSerializer,
     JoinToCourseByKeySerializer,
     StudyingCourseDetailSerializer,
@@ -25,8 +26,11 @@ class TeachingCourseViewSet(
         if self.action == "create":
             return TeachingCourseCreateSerializer
 
-        if self.action == "retrieve" or self.action == "update":
+        if self.action == "retrieve":
             return TeachingCourseDetailSerializer
+
+        if self.action in ("update", "partial_update"):
+            return TeachingCourseUpdateSerializer
 
         return TeachingCourseListSerializer
 
